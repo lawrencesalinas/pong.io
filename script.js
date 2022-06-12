@@ -39,7 +39,20 @@ if (isMobile.matches) {
   speedX = speedY
 }
 
-function renderCanvas() {}
+function renderCanvas() {
+  // Canvas Background
+  context.fillStyle = 'black'
+  context.fillRect(0, 0, width, height)
+
+  // Paddle Color
+  context.fillStyle = 'white'
+
+  // Player Paddle (Button)
+  context.fillRect(paddleBottomX, height - 20, paddleWidth, paddleHeight)
+
+  // Computer Paddle(Top)
+  context.fillRect(paddleTopX, 10, paddleWidth, paddleHeight)
+}
 
 // Create Canvas Element
 function createCanvas() {
