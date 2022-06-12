@@ -29,6 +29,13 @@ let speedX
 let trajectoryX
 let computerSpeed
 
+// Score
+let playerScore = 0
+let computerScore = 0
+const winningScore = 7
+// let isGameOver = true;
+// let isNewGame = true;
+
 // Change mobile settings
 if (isMobile.matches) {
   speedY = -2
@@ -52,6 +59,25 @@ function renderCanvas() {
 
   // Computer Paddle(Top)
   context.fillRect(paddleTopX, 10, paddleWidth, paddleHeight)
+
+  // Dashed Center Line
+  context.beginPath()
+  context.setLineDash([4])
+  context.moveTo(0, 350)
+  context.lineTo(500, 350)
+  context.strokeStyle = 'grey'
+  context.stroke()
+
+  // Ball
+  context.beginPath()
+  context.arc(ballX, ballY, ballRadius, 2 * Math.PI, false)
+  context.fillStyle = 'white'
+  context.fill()
+
+  // Score
+  context.font = '32px Couier New'
+  context.fillText(playerScore, 20, canvas.height / 2 + 50)
+  context.fillText(computerScore, 20, canvas.height / 2 - 30)
 }
 
 // Create Canvas Element
