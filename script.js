@@ -44,6 +44,7 @@ if (isMobile.matches) {
 } else {
   speedY = -1
   speedX = speedY
+  computerSpeed = 3
 }
 
 function renderCanvas() {
@@ -75,41 +76,17 @@ function renderCanvas() {
   context.fill()
 
   // Score
-  context.font = '32px Couier New'
+  context.font = '32px Courier New'
   context.fillText(playerScore, 20, canvas.height / 2 + 50)
   context.fillText(computerScore, 20, canvas.height / 2 - 30)
 }
 
-// Called Every Frame
-function animate() {
+// Create Canvas Element
+function createCanvas() {
+  canvas.width = width
+  canvas.height = height
+  body.appendChild(canvas)
   renderCanvas()
-  ballMove()
-  ballBoundaries()
-  computerAI()
-}
-
-// Start Game, Reset everything
-function startGame() {
-  playerScore = 0
-  computerScore = 0
-  ballReset()
-  createCanvas()
-  //   animate()
-  setInterval(animate, 1000 / 60)
-  canvas.addEventListener('mousemove', (e) => {
-    playerMoved = true
-    // Compensate for canvas being centered
-    paddleBottomX = e.clientX - canvasPosition - paddleDiff
-    if (paddleBottomX < paddleDiff) {
-      paddleBottomX = 0
-    }
-
-    if (paddleBottomX > width - paddleWidth) {
-      paddleBottomX = width - paddleWidth
-    }
-    // Hide Cursor
-    canvas.style.cursor = 'none'
-  })
 }
 
 // Reset Ball to Center
@@ -123,7 +100,7 @@ function ballReset() {
 // Adjust Ball Movement
 function ballMove() {
   // Vertical Spped
-  ballY += -speedX
+  ballY += -speedY
   // Horizontal Speed
   if (playerMoved && paddleContact) {
     ballX += speedX
@@ -136,6 +113,7 @@ function ballBoundaries() {
   if (ballX < 0 && speedX < 0) {
     speedX = -speedX
   }
+
   // Bounce off Right Wall
   if (ballX > width && speedX > 0) {
     speedX = -speedX
@@ -177,7 +155,7 @@ function ballBoundaries() {
       speedY = -speedY
     } else if (ballY < 0) {
       // Reset ball, add to Player Score
-      ballReset
+      ballReset()
       playerScore++
     }
   }
@@ -194,13 +172,39 @@ function computerAI() {
   }
 }
 
-// Create Canvas Element
-function createCanvas() {
-  canvas.width = width
-  canvas.height = height
-  body.appendChild(canvas)
+// Called Every Frame
+function animate() {
   renderCanvas()
+  ballMove()
+  ballBoundaries()
+  computerAI()
+  window.requestAnimationFrame(animate)
+}
+
+// Start Game, Reset everything
+function startGame() {
+  playerScore = 0
+  computerScore = 0
+  ballReset()
+  createCanvas()
+  animate()
+  canvas.addEventListener('mousemove', (e) => {
+    playerMoved = true
+    // Compensate for canvas being centered
+    paddleBottomX = e.clientX - canvasPosition - paddleDiff
+    if (paddleBottomX < paddleDiff) {
+      paddleBottomX = 0
+    }
+
+    if (paddleBottomX > width - paddleWidth) {
+      paddleBottomX = width - paddleWidth
+    }
+    // Hide Cursor
+    canvas.style.cursor = 'none'
+  })
 }
 
 // On Load
 startGame()
+
+console.log(paddleTopX)
