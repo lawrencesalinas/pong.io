@@ -18,7 +18,7 @@ canvas {
   transform: translate(-50%, -50%);
   width: 500px;
   height: 700px;
-  background-color: rgb(56, 556, 56);
+  background-color: rgb(56, 56, 56);
   margin-top: 4px;
   z-index: 11;
   display: flex;
