@@ -80,6 +80,120 @@ function renderCanvas() {
   context.fillText(computerScore, 20, canvas.height / 2 - 30)
 }
 
+// Called Every Frame
+function animate() {
+  renderCanvas()
+  ballMove()
+  ballBoundaries()
+  computerAI()
+}
+
+// Start Game, Reset everything
+function startGame() {
+  playerScore = 0
+  computerScore = 0
+  ballReset()
+  createCanvas()
+  //   animate()
+  setInterval(animate, 1000 / 60)
+  canvas.addEventListener('mousemove', (e) => {
+    playerMoved = true
+    // Compensate for canvas being centered
+    paddleBottomX = e.clientX - canvasPosition - paddleDiff
+    if (paddleBottomX < paddleDiff) {
+      paddleBottomX = 0
+    }
+
+    if (paddleBottomX > width - paddleWidth) {
+      paddleBottomX = width - paddleWidth
+    }
+    // Hide Cursor
+    canvas.style.cursor = 'none'
+  })
+}
+
+// Reset Ball to Center
+function ballReset() {
+  ballX = width / 2
+  ballY = height / 2
+  speedY = -3
+  paddleContact = false
+}
+
+// Adjust Ball Movement
+function ballMove() {
+  // Vertical Spped
+  ballY += -speedX
+  // Horizontal Speed
+  if (playerMoved && paddleContact) {
+    ballX += speedX
+  }
+}
+
+// Determine what ball bounces off, Score points, Reset Ball
+function ballBoundaries() {
+  // Bounce off Left Wall
+  if (ballX < 0 && speedX < 0) {
+    speedX = -speedX
+  }
+  // Bounce off Right Wall
+  if (ballX > width && speedX > 0) {
+    speedX = -speedX
+  }
+
+  // Bounce off player paddle (bottom)
+  if (ballY > height - paddleDiff) {
+    if (ballX > paddleBottomX && ballX < paddleBottomX + paddleWidth) {
+      paddleContact = true
+      // Add Speed on Hit
+      if (playerMoved) {
+        speedY -= 1
+        // Max Speed
+        if (speedY < -5) {
+          speedY = -5
+          computerSpeed = 6
+        }
+      }
+      speedY = -speedY
+      trajectoryX = ballX - (paddleBottomX + paddleDiff)
+      speedX = trajectoryX * 0.3
+    } else if (ballY > height) {
+      // Reset Ball, add to Computer Score
+      ballReset()
+      computerScore++
+    }
+  }
+  // Bounce off computer paddle(top)
+  if (ballY < paddleDiff) {
+    if (ballX > paddleTopX && ballX < paddleTopX + paddleWidth) {
+      // Add Speed on hit
+      if (playerMoved) {
+        speedX += 1
+        // Max Speed
+        if (speedY > 5) {
+          speedY = 5
+        }
+      }
+      speedY = -speedY
+    } else if (ballY < 0) {
+      // Reset ball, add to Player Score
+      ballReset
+      playerScore++
+    }
+  }
+}
+
+// Computer Movement
+function computerAI() {
+  if (playerMoved) {
+    if (paddleTopX + paddleDiff < ballX) {
+      paddleTopX += computerSpeed
+    } else {
+      paddleTopX -= computerSpeed
+    }
+  }
+}
+
 // Create Canvas Element
 function createCanvas() {
   canvas.width = width
@@ -88,4 +202,5 @@ function createCanvas() {
   renderCanvas()
 }
 
-createCanvas()
+// On Load
+startGame()
