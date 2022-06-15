@@ -2,12 +2,14 @@
 const { body } = document
 const canvas = document.createElement('canvas')
 const context = canvas.getContext('2d')
+const socket = io('http://localhost:3000')
 const width = 500
 const height = 700
 const screenWixdth = window.screen.width
 const canvasPosition = screenWixdth / 2 - width / 2
 const isMobile = window.matchMedia('(max-width: 600px)')
 const gameOverEl = document.createElement('div')
+const title = document.createElement('h1')
 
 // Paddle
 const paddleHeight = 10
@@ -49,6 +51,8 @@ if (isMobile.matches) {
 
 // Render everything on canvas
 function renderCanvas() {
+  title.textContent = 'Pong.io'
+  body.appendChild(title)
   // Canvas Background
   context.fillStyle = 'black'
   context.fillRect(0, 0, width, height)
@@ -180,7 +184,7 @@ function showGameOverEl(winner) {
   gameOverEl.textContent = ''
   gameOverEl.classList.add('game-over-container')
   // Title
-  const title = document.createElement('h1')
+  const title = document.createElement('h2')
 
   title.textContent = `${winner} Wins!`
   // Button
